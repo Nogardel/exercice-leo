@@ -1,0 +1,225 @@
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Navigate } from 'react-router-dom';
+import UserProfile from '../components/auth/UserProfile';
+import './Pages.css';
+import { 
+  fetchTodos, 
+  addTodo, 
+  deleteTodo, 
+  updateTodo, 
+  fetchDoneTodos 
+} from '../services/todoService';
+
+const TodoPage = ({ user, onLogout }) => {
+  const [todos, setTodos] = useState([]);
+  const [newTaskText, setNewTaskText] = useState('');
+  const [filteredTodos, setFilteredTodos] = useState([]);
+  const [showFiltered, setShowFiltered] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [showDoneTasks, setShowDoneTasks] = useState(false);
+
+  // Fonction pour récupérer et mettre à jour les todos dans l'état
+  const loadTodos = async () => {
+    try {
+      // Récupérer seulement les todos de l'utilisateur connecté en passant son UID
+      const data = await fetchTodos(user.uid);
+      setTodos(data || []);
+      setShowFiltered(false);
+    } catch (error) {
+      console.error('Erreur lors du chargement des tâches:', error);
+      setTodos([]);
+    }
+  };
+
+  // Fonction pour charger les tâches terminées
+  const loadDoneTodos = async () => {
+    try {
+      // Récupérer seulement les todos terminés de l'utilisateur connecté
+      const data = await fetchDoneTodos(user.uid);
+      setTodos(data || []);
+      setShowDoneTasks(true);
+      setShowFiltered(false);
+    } catch (error) {
+      console.error('Erreur lors du chargement des tâches terminées:', error);
+      setTodos([]);
+    }
+  };
+
+  // Fonction pour revenir à toutes les tâches
+  const loadAllTodos = async () => {
+    await loadTodos();
+    setShowDoneTasks(false);
+  };
+
+  useEffect(() => {
+    // Si l'utilisateur n'est pas connecté, on ne charge pas les tâches
+    if (user) {
+      loadTodos();
+    }
+  }, [user]);
+
+  // Fonction pour ajouter une tâche via l'API
+  const ajouterTache = async () => {
+    if (!newTaskText.trim()) {
+      alert('Veuillez entrer un nom pour la tâche');
+      return;
+    }
+
+    try {
+      // Ajouter la tâche avec l'UID de l'utilisateur connecté
+      await addTodo(newTaskText, user.uid);
+      await loadTodos();
+      setNewTaskText('');
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout d\'une tâche:', error);
+      alert('Impossible d\'ajouter la tâche. Veuillez vérifier que le serveur est en cours d\'exécution.');
+    }
+  };
+
+  // Gérer la soumission du formulaire pour éviter le rechargement de la page
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    ajouterTache();
+  };
+
+  // Fonction pour supprimer une tâche
+  const supprimerTache = async (id) => {
+    try {
+      await deleteTodo(id);
+      await loadTodos();
+    } catch (error) {
+      console.error('Erreur lors de la suppression d\'une tâche:', error);
+    }
+  };
+
+  // Fonction pour basculer l'état d'une tâche (fait/pas fait)
+  const toggleTaskStatus = async (id, currentDone) => {
+    try {
+      await updateTodo(id, { done: !currentDone });
+      await loadTodos();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour d\'une tâche:', error);
+    }
+  };
+
+  // Fonction pour filtrer les todos non terminés
+  const filterIncompleteTodos = () => {
+    if (!showFiltered) {
+      const nonTermines = todos.filter(todo => !todo.done);
+      setFilteredTodos(nonTermines);
+      setShowFiltered(true);
+    } else {
+      setShowFiltered(false);
+    }
+  };
+
+  // Fonction pour la recherche par mot-clé
+  const handleSearch = (e) => {
+    const keyword = e.target.value;
+    setSearchKeyword(keyword);
+  };
+
+  // Filtrer les todos en fonction de la recherche
+  const getFilteredTodos = () => {
+    if (searchKeyword.trim() === '') {
+      return todosToDisplay;
+    }
+    return todosToDisplay.filter(todo => 
+      todo.text.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+  };
+
+  // Déterminer quels todos afficher (tous ou filtrés)
+  const todosToDisplay = showFiltered ? filteredTodos : todos;
+
+  // Si l'utilisateur n'est pas authentifié, rediriger vers la page d'authentification
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return (
+    <div className="todo-page">
+      <div className="header-container">
+        <h1>Ma Todo List</h1>
+        <UserProfile user={user} onLogout={onLogout} />
+      </div>
+      
+      <div className="todos-container">
+        <h2>Mes tâches :</h2>
+        
+        {/* Formulaire pour ajouter une tâche */}
+        <form onSubmit={handleSubmit} className="add-task-form">
+          <input
+            type="text"
+            value={newTaskText}
+            onChange={(e) => setNewTaskText(e.target.value)}
+            placeholder="Nom de la tâche"
+            className="task-input"
+          />
+          <button type="submit">Ajouter une tâche</button>
+        </form>
+
+        {/* Barre de recherche */}
+        <div className="search-container">
+          <input
+            type="text"
+            value={searchKeyword}
+            onChange={handleSearch}
+            placeholder="Rechercher une tâche..."
+            className="search-input"
+          />
+        </div>
+        
+        {/* Boutons de filtrage */}
+        <div className="filter-buttons">
+          <button 
+            onClick={filterIncompleteTodos} 
+            className={`filter-btn ${showFiltered ? 'active' : ''}`}
+          >
+            {showFiltered ? 'Afficher toutes les tâches' : 'Afficher uniquement les tâches non terminées'}
+          </button>
+          
+          <button 
+            onClick={showDoneTasks ? loadAllTodos : loadDoneTodos} 
+            className={`filter-btn ${showDoneTasks ? 'active' : ''}`}
+          >
+            {showDoneTasks ? 'Afficher toutes les tâches' : 'Afficher uniquement les tâches terminées'}
+          </button>
+        </div>
+        
+        {/* Liste des todos */}
+        {getFilteredTodos().length > 0 ? (
+          <ul className="todo-list">
+            {getFilteredTodos().map((todo) => (
+              <li key={todo.id || Math.random()} className={todo.done ? 'task-done' : ''}>
+                <input
+                  type="checkbox"
+                  checked={todo.done}
+                  onChange={() => toggleTaskStatus(todo.id, todo.done)}
+                />
+                <span className="todo-text">{todo.text}</span>
+                <button 
+                  className="delete-btn"
+                  onClick={() => supprimerTache(todo.id)}
+                  title="Supprimer"
+                >
+                  🗑️
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Aucune tâche à afficher.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+TodoPage.propTypes = {
+  user: PropTypes.object,
+  onLogout: PropTypes.func
+};
+
+export default TodoPage;

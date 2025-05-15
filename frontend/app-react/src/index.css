@@ -1,0 +1,157 @@
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Variables pour le thème */
+  --bg-color: #f8f9fa;
+  --text-color: #213547;
+  --primary-color: #646cff;
+  --secondary-color: #535bf2;
+  --success-color: #10b981;
+  --danger-color: #e53e3e;
+  --border-color: #e2e8f0;
+  --card-bg: #ffffff;
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --button-bg: #f0f0ff;
+  --button-hover-bg: #e6e6ff;
+  --button-text: #213547;
+  --button-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --input-bg: #f8f9fa;
+  --input-focus-bg: #ffffff;
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c0c0ff;
+  --scrollbar-thumb-hover: #a0a0ff;
+  --gradient-bg: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Thème sombre */
+[data-theme='dark'] {
+  --bg-color: #1a1a1a;
+  --text-color: rgba(255, 255, 255, 0.87);
+  --primary-color: #747bff;
+  --secondary-color: #646cff;
+  --success-color: #10b981;
+  --danger-color: #f87171;
+  --border-color: #333333;
+  --card-bg: #242424;
+  --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --button-bg: #313131;
+  --button-hover-bg: #3f3f3f;
+  --button-text: #ffffff;
+  --button-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --input-bg: #2a2a2a;
+  --input-focus-bg: #333333;
+  --scrollbar-track: #333333;
+  --scrollbar-thumb: #646cff;
+  --scrollbar-thumb-hover: #747bff;
+  --gradient-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  background-image: var(--gradient-bg);
+}
+
+a {
+  font-weight: 500;
+  color: var(--primary-color);
+  text-decoration: inherit;
+  transition: all 0.3s;
+}
+
+a:hover {
+  color: var(--secondary-color);
+  text-decoration: underline;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  color: var(--text-color);
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+button:hover {
+  border-color: var(--primary-color);
+  background-color: var(--button-hover-bg);
+  transform: translateY(-2px);
+  box-shadow: var(--button-hover-shadow);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Personnalisation de la barre de défilement pour une apparence moderne */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Styles pour le bouton de changement de thème */
+.theme-toggle-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle:hover {
+  transform: rotate(30deg) scale(1.1);
+}

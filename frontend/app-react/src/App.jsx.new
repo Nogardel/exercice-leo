@@ -1,0 +1,43 @@
+/* eslint-disable no-console */
+import { Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
+import { useAuth } from './contexts/AuthContext';
+import { logout } from './services/authService';
+import HomePage from './pages/HomePage';
+import AuthPage from './pages/AuthPage';
+import TodoPage from './pages/TodoPage';
+
+console.log('App.jsx chargé');
+
+function App() {
+  const { currentUser } = useAuth();
+
+  // Fonction de déconnexion
+  const handleLogout = async () => {
+    try {
+      await logout();
+      console.log('Déconnexion réussie');
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+    }
+  };
+
+  return (
+    <div className="app-container">
+      <Routes>
+        <Route path="/" element={
+          currentUser ? <HomePage user={currentUser} onLogout={handleLogout} /> : <Navigate to="/auth" />
+        } />
+        <Route path="/auth" element={
+          currentUser ? <Navigate to="/" /> : <AuthPage />
+        } />
+        <Route path="/todos" element={
+          <TodoPage user={currentUser} onLogout={handleLogout} />
+        } />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
