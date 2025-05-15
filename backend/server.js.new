@@ -1,0 +1,117 @@
+const express = require("express");
+const path = require("path");
+const cors = require("cors");
+const axios = require("axios");
+const tachesService = require("./services/taches");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const FIREBASE_URL = "https://todolist-3a489-default-rtdb.europe-west1.firebasedatabase.app/todos";
+
+// Activer CORS pour permettre les requêtes cross-origin pendant le développement
+app.use(cors());
+
+// Middleware pour parser le JSON des requêtes
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Middleware de logging pour déboguer les requêtes
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
+// Middleware pour servir les fichiers statiques du frontend
+app.use(express.static(path.join(__dirname, "../frontend/app-react/dist")));
+
+// Exemple de route API
+app.get("/api/message", (req, res) => {
+  console.log("GET /api/message - Envoi du message de bienvenue");
+  res.json({ message: "Bonjour depuis le backend Express!" });
+});
+
+// Tableau des todos en mémoire (non utilisé maintenant car nous utilisons Firebase)
+let todos = [
+  { id: 1, text: "Apprendre Express", done: false },
+  { id: 2, text: "Maîtriser React", done: false },
+  { id: 3, text: "Créer une Todo List", done: true },
+];
+
+// Route GET pour récupérer toutes les tâches
+app.get("/api/todos", async (req, res, next) => {
+  try {
+    const todos = await tachesService.getAllTasks();
+    res.json(todos);
+  } catch (error) {
+    next(error); // Passer l'erreur au middleware de gestion d'erreurs
+  }
+});
+
+// Route POST pour ajouter une nouvelle tâche
+app.post("/api/todos", async (req, res, next) => {
+  try {
+    const newTodo = req.body;
+    const createdTodo = await tachesService.addTask(newTodo);
+    res.status(201).json(createdTodo);
+  } catch (error) {
+    next(error); // Passer l'erreur au middleware de gestion d'erreurs
+  }
+});
+
+// Route DELETE pour supprimer une tâche
+app.delete("/api/todos/:id", async (req, res, next) => {
+  const id = req.params.id;
+  console.log(`DELETE /api/todos/${id}`);
+  
+  try {
+    await tachesService.deleteTask(id);
+    console.log(`Tâche ${id} supprimée de Firebase`);
+    res.status(204).end();
+  } catch (error) {
+    next(error); // Passer l'erreur au middleware de gestion d'erreurs
+  }
+});
+
+// Route PUT pour mettre à jour l'état d'une tâche (fait/pas fait)
+app.put("/api/todos/:id", async (req, res, next) => {
+  const id = req.params.id;
+  console.log(`PUT /api/todos/${id} - Corps:`, req.body);
+  
+  try {
+    const updatedTodo = await tachesService.updateTask(id, req.body);
+    console.log("Tâche mise à jour:", updatedTodo);
+    res.json(updatedTodo);
+  } catch (error) {
+    next(error); // Passer l'erreur au middleware de gestion d'erreurs
+  }
+});
+
+// Gérer les routes non définies - rediriger vers l'application React
+app.get("*", (req, res) => {
+  console.log(`GET ${req.url} - Route non définie, renvoi vers index.html`);
+  res.sendFile(path.join(__dirname, "../frontend/app-react/dist/index.html"));
+});
+
+// Middleware pour gérer les erreurs
+app.use((err, req, res, next) => {
+  console.error(`ERREUR pour ${req.method} ${req.url}:`, err.stack);
+  const errorMessage = process.env.NODE_ENV === 'production' 
+    ? "Une erreur s'est produite sur le serveur" 
+    : err.message || "Erreur interne du serveur";
+  res.status(500).json({ 
+    error: errorMessage,
+    path: req.path
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(
+    `Serveur backend démarré sur le port ${PORT} - ${new Date().toISOString()}`
+  );
+  console.log(`Routes API disponibles:
+  - GET  /api/message
+  - GET  /api/todos
+  - POST /api/todos
+  - PUT  /api/todos/:id
+  - DELETE /api/todos/:id`);
+});
