@@ -29,8 +29,7 @@ const UserProfile = ({ user, onLogout }) => {
 
   if (!user) return null;
 
-  return (
-    <div className="user-profile">
+  return (    <div className="user-profile">
       <div className="user-info">
         <div className="user-avatar">{getInitials()}</div>
         <div className="user-details">
@@ -38,8 +37,14 @@ const UserProfile = ({ user, onLogout }) => {
           <div className="user-email">{user.email}</div>
         </div>
       </div>
-      <button className="logout-btn" onClick={handleLogout}>
-        Déconnexion      </button>
+      <div className="user-actions">
+        <a href="/profile" className="profile-link" title="Voir mon profil">
+          Mon profil
+        </a>
+        <button className="logout-btn" onClick={handleLogout}>
+          Déconnexion
+        </button>
+      </div>
     </div>
   );
 };

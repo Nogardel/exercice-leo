@@ -6,6 +6,7 @@ import { logout } from './services/authService';
 import HomePage from './pages/HomePage';
 import AuthPage from './pages/AuthPage';
 import TodoPage from './pages/TodoPage';
+import ProfilePage from './pages/ProfilePage';
 import Loader from './components/Loader';
 import { NotificationProvider } from './contexts/NotificationContext';
 
@@ -62,12 +63,14 @@ function App() {
         <Routes>
           <Route path="/" element={
             currentUser ? <HomePage user={currentUser} onLogout={handleLogout} /> : <Navigate to="/auth" />
-          } />
-          <Route path="/auth" element={
+          } />          <Route path="/auth" element={
             currentUser ? <Navigate to="/" /> : <AuthPage />
           } />
           <Route path="/todos" element={
             <TodoPage user={currentUser} onLogout={handleLogout} />
+          } />
+          <Route path="/profile" element={
+            <ProfilePage user={currentUser} onLogout={handleLogout} />
           } />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

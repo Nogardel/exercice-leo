@@ -102,11 +102,24 @@
   margin: 0;
 }
 
+.header-nav {
+  margin-right: auto;
+  margin-left: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
 /* Styles responsifs */
 @media (max-width: 768px) {
   .header-container {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .header-nav {
+    margin-left: 0;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 
   .user-profile {
@@ -146,6 +159,205 @@
   }
 }
 
+/* Styles pour la page de profil */
+.profile-page {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  animation: slideInUp 0.6s ease-out;
+}
+
+.profile-container {
+  background-color: var(--input-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: var(--soft-shadow);
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.user-avatar.large {
+  width: 100px;
+  height: 100px;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.profile-details {
+  margin-top: 2rem;
+}
+
+.profile-info {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.profile-item {
+  margin-bottom: 1rem;
+}
+
+.profile-item label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.profile-item p {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.uid {
+  font-family: monospace;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.profile-email {
+  margin-bottom: 1.5rem;
+}
+
+.profile-email label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.profile-email p {
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.profile-email small {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.profile-button {
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.profile-button.edit {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+.profile-button.save {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+.profile-button.cancel {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.profile-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--button-hover-shadow);
+}
+
+.profile-button.edit:hover,
+.profile-button.save:hover {
+  background-color: var(--secondary-color);
+}
+
+.profile-button.cancel:hover {
+  background-color: var(--input-focus-bg);
+}
+
+.navigation-links {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.nav-link:hover {
+  background-color: var(--input-focus-bg);
+  color: var(--secondary-color);
+}
+
+.nav-link.logout {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.edit-profile-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.edit-profile-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.edit-profile-form input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  font-size: 1.05rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: all 0.3s;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+.edit-profile-form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.2);
+  background-color: var(--input-focus-bg);
+}
+
 /* Animations */
 @keyframes slideInUp {
   from {
@@ -158,6 +370,6 @@
   }
 }
 
-.home-page, .todos-container {
+.home-page, .todos-container, .profile-page {
   animation: slideInUp 0.6s ease-out;
 }

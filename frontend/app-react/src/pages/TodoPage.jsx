@@ -180,9 +180,12 @@ const TodoPage = ({ user, onLogout }) => {
   );
 
   return (
-    <div className="todo-page">
-      <div className="header-container">
+    <div className="todo-page">      <div className="header-container">
         <h1>Ma Liste de Tâches</h1>
+        <div className="navigation-links header-nav">
+          <Link to="/" className="nav-link">Accueil</Link>
+          <Link to="/profile" className="nav-link">Mon profil</Link>
+        </div>
         <UserProfile user={user} onLogout={onLogout} />
       </div>
 

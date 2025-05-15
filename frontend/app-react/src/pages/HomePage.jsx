@@ -13,11 +13,13 @@ const HomePage = ({ user, onLogout }) => {
   return (
     <div className="home-page">
       <h1>Bienvenue sur la Todo List</h1>
-      <UserProfile user={user} onLogout={onLogout} />
-      <p>Vous êtes connecté et pouvez maintenant gérer vos tâches.</p>
+      <UserProfile user={user} onLogout={onLogout} />      <p>Vous êtes connecté et pouvez maintenant gérer vos tâches.</p>
       <div className="action-buttons">
         <a href="/todos" className="home-button">
           Voir mes tâches
+        </a>
+        <a href="/profile" className="home-button">
+          Mon profil
         </a>
       </div>
     </div>
