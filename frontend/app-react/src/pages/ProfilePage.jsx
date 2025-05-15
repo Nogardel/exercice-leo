@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { updateProfile } from 'firebase/auth';
@@ -8,10 +8,17 @@ import UserProfile from '../components/auth/UserProfile';
 import './Pages.css';
 
 const ProfilePage = ({ user, onLogout }) => {
-  const [displayName, setDisplayName] = useState(user?.displayName || '');
+  const [displayName, setDisplayName] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { showSuccess, showError } = useNotification();
+
+  // Mettre à jour l'état du prénom lorsque l'utilisateur change
+  useEffect(() => {
+    if (user && user.displayName) {
+      setDisplayName(user.displayName);
+    }
+  }, [user]);
 
   // Si l'utilisateur n'est pas authentifié, rediriger vers la page d'authentification
   if (!user) {
